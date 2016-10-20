@@ -1,6 +1,7 @@
 #![cfg_attr(feature = "dev", allow(unstable_features))]
 #![cfg_attr(feature = "dev", feature(plugin))]
 #![cfg_attr(feature = "dev", plugin(clippy))]
+#![deny(missing_docs)]
 //! Defines 3-space and implements the boolean GJK (BGJK) algorithm
 //! for intersection testing.
 use std::ops::{Neg, Sub};
