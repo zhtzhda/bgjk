@@ -7,6 +7,9 @@
 use std::ops::{Neg, Sub};
 
 /// Vector for use in the `bgjk` function
+///
+/// Uses cartesian spatial dimensions in the order
+/// x, y, z.
 #[derive(Clone, Copy, Debug, Default)]
 pub struct Vec3(pub f32, pub f32, pub f32);
 
@@ -233,93 +236,93 @@ mod tests {
 
 	#[test]
 	fn square1() {
-		let cube1 = pts![(0.0, 0.0, 0.0), (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (1.0, 1.0, 0.0)];
-		let cube2 = pts![(-2.0, 0.0, 0.0), (-3.0, 0.0, 0.0), (-2.0, 1.0, 0.0), (-3.0, 1.0, 0.0)];
-		assert_eq![bgjk(&cube1, &cube2), false];
+		let shape1 = pts![(0.0, 0.0, 0.0), (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (1.0, 1.0, 0.0)];
+		let shape2 = pts![(-2.0, 0.0, 0.0), (-3.0, 0.0, 0.0), (-2.0, 1.0, 0.0), (-3.0, 1.0, 0.0)];
+		assert_eq![bgjk(&shape1, &shape2), false];
 	}
 
 	#[test]
 	fn exact_overlap() {
-		let cube1 = pts![(0.0, 0.0, 0.0), (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (1.0, 1.0, 0.0)];
-		let cube2 = pts![(0.0, 0.0, 0.0), (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (1.0, 1.0, 0.0)];
-		assert_eq![bgjk(&cube1, &cube2), true];
+		let shape1 = pts![(0.0, 0.0, 0.0), (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (1.0, 1.0, 0.0)];
+		let shape2 = pts![(0.0, 0.0, 0.0), (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (1.0, 1.0, 0.0)];
+		assert_eq![bgjk(&shape1, &shape2), true];
 	}
 
 	#[test]
 	fn line_overlap() {
-		let cube1 = pts![(0.0, 0.0, 0.0), (1.0, 0.0, 0.0)];
-		let cube2 = pts![(0.5, 1.0, 0.0), (0.5, -1.0, 0.0)];
-		assert_eq![bgjk(&cube1, &cube2), true];
+		let shape1 = pts![(0.0, 0.0, 0.0), (1.0, 0.0, 0.0)];
+		let shape2 = pts![(0.5, 1.0, 0.0), (0.5, -1.0, 0.0)];
+		assert_eq![bgjk(&shape1, &shape2), true];
 	}
 
 	#[test]
 	fn line_non_overlap() {
-		let cube1 = pts![(0.0, 0.0, 0.0), (1.0, 0.0, 0.0)];
-		let cube2 = pts![(1.5, 1.0, 0.0), (1.5, -1.0, 0.0)];
-		assert_eq![bgjk(&cube1, &cube2), false];
+		let shape1 = pts![(0.0, 0.0, 0.0), (1.0, 0.0, 0.0)];
+		let shape2 = pts![(1.5, 1.0, 0.0), (1.5, -1.0, 0.0)];
+		assert_eq![bgjk(&shape1, &shape2), false];
 	}
 
 	#[test]
 	fn small_line_point_overlap() {
-		let cube1 = pts![(0.0, 0.0, 0.0), (0.01, 0.0, 0.0)];
-		let cube2 = pts![(0.005, 0.0, 0.1)];
-		assert_eq![bgjk(&cube1, &cube2), false];
+		let shape1 = pts![(0.0, 0.0, 0.0), (0.01, 0.0, 0.0)];
+		let shape2 = pts![(0.005, 0.0, 0.1)];
+		assert_eq![bgjk(&shape1, &shape2), false];
 	}
 
 	#[test]
 	fn line_point_non_overlap() {
-		let cube1 = pts![(0.0, 0.0, 0.0), (1.0, 0.0, 0.0)];
-		let cube2 = pts![(0.5, 0.0, 0.1)];
-		assert_eq![bgjk(&cube1, &cube2), false];
+		let shape1 = pts![(0.0, 0.0, 0.0), (1.0, 0.0, 0.0)];
+		let shape2 = pts![(0.5, 0.0, 0.1)];
+		assert_eq![bgjk(&shape1, &shape2), false];
 	}
 
 	#[test]
 	fn point_overlap() {
-		let cube1 = pts![(0.5, 1.0, 0.0)];
-		let cube2 = pts![(0.5, 1.0, 0.0)];
-		assert_eq![bgjk(&cube1, &cube2), true];
+		let shape1 = pts![(0.5, 1.0, 0.0)];
+		let shape2 = pts![(0.5, 1.0, 0.0)];
+		assert_eq![bgjk(&shape1, &shape2), true];
 	}
 
 	#[test]
 	fn point_no_overlap() {
-		let cube1 = pts![(0.5, 1.0, 0.0)];
-		let cube2 = pts![(1.0, 1.0, 0.0)];
-		assert_eq![bgjk(&cube1, &cube2), false];
+		let shape1 = pts![(0.5, 1.0, 0.0)];
+		let shape2 = pts![(1.0, 1.0, 0.0)];
+		assert_eq![bgjk(&shape1, &shape2), false];
 	}
 
 	#[test]
 	fn empty_no_overlap() {
 		// An empty set defaults to a single point in origo in the set
-		let cube1: [Vec3; 0] = pts![];
-		let cube2 = pts![(1.0, 1.0, 1.0)];
-		assert_eq![bgjk(&cube1, &cube2), false];
+		let shape1: [Vec3; 0] = pts![];
+		let shape2 = pts![(1.0, 1.0, 1.0)];
+		assert_eq![bgjk(&shape1, &shape2), false];
 	}
 
 	#[test]
 	fn side_by_side_squares() {
-		let cube1 = pts![(0.0, 0.0, 0.0), (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (1.0, 1.0, 0.0)];
-		let cube2 = pts![(1.0, 0.0, 0.0), (2.0, 0.0, 0.0), (1.0, 1.0, 0.0), (2.0, 1.0, 0.0)];
-		assert_eq![bgjk(&cube1, &cube2), true];
+		let shape1 = pts![(0.0, 0.0, 0.0), (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (1.0, 1.0, 0.0)];
+		let shape2 = pts![(1.0, 0.0, 0.0), (2.0, 0.0, 0.0), (1.0, 1.0, 0.0), (2.0, 1.0, 0.0)];
+		assert_eq![bgjk(&shape1, &shape2), true];
 	}
 
 	#[test]
 	fn side_by_side_squares_offset() {
-		let cube1 = pts![(0.0, 0.0, 0.0), (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (1.0, 1.0, 0.0)];
-		let cube2 =
+		let shape1 = pts![(0.0, 0.0, 0.0), (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (1.0, 1.0, 0.0)];
+		let shape2 =
 			pts![(1.0 + EPS, 0.0, 0.0), (2.0, 0.0, 0.0), (1.0 + EPS, 1.0, 0.0), (2.0, 1.0, 0.0)];
-		assert_eq![bgjk(&cube1, &cube2), false];
+		assert_eq![bgjk(&shape1, &shape2), false];
 	}
 
 	#[test]
 	fn single_point_square_overlap() {
-		let cube1 = pts![(0.0, 0.0, 0.0), (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (1.0, 1.0, 0.0)];
-		let cube2 = pts![(1.0, 1.0, 0.0), (2.0, 1.0, 0.0), (1.0, 2.0, 0.0), (2.0, 2.0, 0.0)];
-		assert_eq![bgjk(&cube1, &cube2), true];
+		let shape1 = pts![(0.0, 0.0, 0.0), (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (1.0, 1.0, 0.0)];
+		let shape2 = pts![(1.0, 1.0, 0.0), (2.0, 1.0, 0.0), (1.0, 2.0, 0.0), (2.0, 2.0, 0.0)];
+		assert_eq![bgjk(&shape1, &shape2), true];
 	}
 
 	#[test]
-	fn single_point_cube_overlap() {
-		let cube1 = pts![(0.0, 0.0, 0.0),
+	fn single_point_shape_overlap() {
+		let shape1 = pts![(0.0, 0.0, 0.0),
 		                 (1.0, 0.0, 0.0),
 		                 (0.0, 1.0, 0.0),
 		                 (1.0, 1.0, 0.0),
@@ -327,7 +330,7 @@ mod tests {
 		                 (1.0, 0.0, 1.0),
 		                 (0.0, 1.0, 1.0),
 		                 (1.0, 1.0, 1.0)];
-		let cube2 = pts![(1.0, 1.0, 1.0),
+		let shape2 = pts![(1.0, 1.0, 1.0),
 		                 (2.0, 1.0, 1.0),
 		                 (1.0, 2.0, 1.0),
 		                 (2.0, 2.0, 1.0),
@@ -335,12 +338,12 @@ mod tests {
 		                 (2.0, 1.0, 2.0),
 		                 (1.0, 2.0, 2.0),
 		                 (2.0, 2.0, 2.0)];
-		assert_eq![bgjk(&cube1, &cube2), true];
+		assert_eq![bgjk(&shape1, &shape2), true];
 	}
 
 	#[test]
-	fn single_point_cube_non_overlap() {
-		let cube1 = pts![(0.0, 0.0, 0.0),
+	fn single_point_shape_non_overlap() {
+		let shape1 = pts![(0.0, 0.0, 0.0),
 		                 (1.0, 0.0, 0.0),
 		                 (0.0, 1.0, 0.0),
 		                 (1.0, 1.0, 0.0),
@@ -348,7 +351,7 @@ mod tests {
 		                 (1.0, 0.0, 1.0),
 		                 (0.0, 1.0, 1.0),
 		                 (1.0, 1.0, 1.0)];
-		let cube2 = pts![(1.0, 1.0, 1.0 + EPS),
+		let shape2 = pts![(1.0, 1.0, 1.0 + EPS),
 		                 (2.0, 1.0, 1.0 + EPS),
 		                 (1.0, 2.0, 1.0 + EPS),
 		                 (2.0, 2.0, 1.0 + EPS),
@@ -356,12 +359,12 @@ mod tests {
 		                 (2.0, 1.0, 2.0),
 		                 (1.0, 2.0, 2.0),
 		                 (2.0, 2.0, 2.0)];
-		assert_eq![bgjk(&cube1, &cube2), false];
+		assert_eq![bgjk(&shape1, &shape2), false];
 	}
 
 	#[test]
-	fn single_line_cube_overlap() {
-		let cube1 = pts![(0.0, 0.0, 0.0),
+	fn single_line_shape_overlap() {
+		let shape1 = pts![(0.0, 0.0, 0.0),
 		                 (1.0, 0.0, 0.0),
 		                 (0.0, 1.0, 0.0),
 		                 (1.0, 1.0, 0.0),
@@ -369,7 +372,7 @@ mod tests {
 		                 (1.0, 0.0, 1.0),
 		                 (0.0, 1.0, 1.0),
 		                 (1.0, 1.0, 1.0)];
-		let cube2 = pts![(1.0, 1.0, 0.0),
+		let shape2 = pts![(1.0, 1.0, 0.0),
 		                 (2.0, 1.0, 0.0),
 		                 (1.0, 2.0, 0.0),
 		                 (2.0, 2.0, 0.0),
@@ -377,12 +380,12 @@ mod tests {
 		                 (2.0, 1.0, 1.0),
 		                 (1.0, 2.0, 1.0),
 		                 (2.0, 2.0, 1.0)];
-		assert_eq![bgjk(&cube1, &cube2), true];
+		assert_eq![bgjk(&shape1, &shape2), true];
 	}
 
 	#[test]
-	fn cube_projective_non_overlap() {
-		let cube1 = pts![(0.0, 0.0, 0.0),
+	fn shape_projective_non_overlap() {
+		let shape1 = pts![(0.0, 0.0, 0.0),
 		                 (1.0, 0.0, 0.0),
 		                 (0.0, 1.0, 0.0),
 		                 (1.0, 1.0, 0.0),
@@ -390,7 +393,7 @@ mod tests {
 		                 (2.0, 0.0, 1.0),
 		                 (1.0, 1.0, 1.0),
 		                 (2.0, 1.0, 1.0)];
-		let cube2 = pts![(1.1, 1.0, 0.0),
+		let shape2 = pts![(1.1, 1.0, 0.0),
 		                 (2.1, 1.0, 0.0),
 		                 (1.1, 2.0, 0.0),
 		                 (2.1, 2.0, 0.0),
@@ -398,12 +401,12 @@ mod tests {
 		                 (3.1, 1.0, 1.0),
 		                 (2.1, 2.0, 1.0),
 		                 (3.1, 2.0, 1.0)];
-		assert_eq![bgjk(&cube1, &cube2), false];
+		assert_eq![bgjk(&shape1, &shape2), false];
 	}
 
 	#[test]
-	fn cube_projective_overlap() {
-		let cube1 = pts![(0.0, 0.0, 0.0),
+	fn shape_projective_overlap() {
+		let shape1 = pts![(0.0, 0.0, 0.0),
 		                 (1.0, 0.0, 0.0),
 		                 (0.0, 1.0, 0.0),
 		                 (1.0, 1.0, 0.0),
@@ -411,7 +414,7 @@ mod tests {
 		                 (2.0, 0.0, 1.0),
 		                 (1.0, 1.0, 1.0),
 		                 (2.0, 1.0, 1.0)];
-		let cube2 = pts![(1.1, 1.0, 0.0),
+		let shape2 = pts![(1.1, 1.0, 0.0),
 		                 (2.1, 1.0, 0.0),
 		                 (1.1, 2.0, 0.0),
 		                 (2.1, 2.0, 0.0),
@@ -419,63 +422,63 @@ mod tests {
 		                 (3.1, 1.0, 1.0),
 		                 (2.0, 2.0, 1.0),
 		                 (3.1, 2.0, 1.0)];
-		assert_eq![bgjk(&cube1, &cube2), true];
+		assert_eq![bgjk(&shape1, &shape2), true];
 	}
 
 	#[test]
-	fn circle_non_overlap() {
-		let (mut circle1, mut circle2) = (vec![], vec![]);
+	fn shape_non_overlap() {
+		let (mut shape1, mut shape2) = (vec![], vec![]);
 		let units = 100;
-		circle1.reserve(units);
-		circle2.reserve(units);
+		shape1.reserve(units);
+		shape2.reserve(units);
 		for i in 0..units {
 			let radian = i as f32 / units as f32 * 2.0 * PI;
-			circle1.push(Vec3(radian.cos(), radian.sin(), 0.0));
-			circle2.push(Vec3(radian.cos(), radian.sin(), EPS));
+			shape1.push(Vec3(radian.cos(), radian.sin(), 0.0));
+			shape2.push(Vec3(radian.cos(), radian.sin(), EPS));
 		}
-		assert_eq![bgjk(&circle1, &circle2), false];
+		assert_eq![bgjk(&shape1, &shape2), false];
 	}
 
 	#[test]
-	fn circle_overlap() {
-		let (mut circle1, mut circle2) = (vec![], vec![]);
+	fn shape_overlap() {
+		let (mut shape1, mut shape2) = (vec![], vec![]);
 		let units = 100;
-		circle1.reserve(units);
-		circle2.reserve(units);
+		shape1.reserve(units);
+		shape2.reserve(units);
 		for i in 0..units {
 			let radian = i as f32 / units as f32 * 2.0 * PI;
-			circle1.push(Vec3(radian.cos(), radian.sin(), 0.0));
-			circle2.push(Vec3(radian.cos(), radian.sin(), 0.0));
+			shape1.push(Vec3(radian.cos(), radian.sin(), 0.0));
+			shape2.push(Vec3(radian.cos(), radian.sin(), 0.0));
 		}
-		assert_eq![bgjk(&circle1, &circle2), true];
+		assert_eq![bgjk(&shape1, &shape2), true];
 	}
 
 	#[test]
-	fn circle_section() {
-		let (mut circle1, mut circle2) = (vec![], vec![]);
+	fn shape_section() {
+		let (mut shape1, mut shape2) = (vec![], vec![]);
 		let units = 100;
-		circle1.reserve(units);
-		circle2.reserve(units);
+		shape1.reserve(units);
+		shape2.reserve(units);
 		for i in 0..units {
 			let radian = i as f32 / units as f32 * 2.0 * PI;
-			circle1.push(Vec3(radian.cos(), radian.sin(), 0.0));
-			circle2.push(Vec3(radian.cos() + 0.5, radian.sin(), 0.0));
+			shape1.push(Vec3(radian.cos(), radian.sin(), 0.0));
+			shape2.push(Vec3(radian.cos() + 0.5, radian.sin(), 0.0));
 		}
-		assert_eq![bgjk(&circle1, &circle2), true];
+		assert_eq![bgjk(&shape1, &shape2), true];
 	}
 
 	#[test]
-	fn circle_away() {
-		let (mut circle1, mut circle2) = (vec![], vec![]);
+	fn shape_away() {
+		let (mut shape1, mut shape2) = (vec![], vec![]);
 		let units = 100;
-		circle1.reserve(units);
-		circle2.reserve(units);
+		shape1.reserve(units);
+		shape2.reserve(units);
 		for i in 0..units {
 			let radian = i as f32 / units as f32 * 2.0 * PI;
-			circle1.push(Vec3(radian.cos(), radian.sin(), 0.0));
-			circle2.push(Vec3(radian.cos() + 2.0 + 2.0 * EPS, radian.sin(), 0.0));
+			shape1.push(Vec3(radian.cos(), radian.sin(), 0.0));
+			shape2.push(Vec3(radian.cos() + 2.0 + 2.0 * EPS, radian.sin(), 0.0));
 		}
-		assert_eq![bgjk(&circle1, &circle2), false];
+		assert_eq![bgjk(&shape1, &shape2), false];
 	}
 
 }
