@@ -79,6 +79,7 @@ pub fn bgjk(hull1: &[Vec3], hull2: &[Vec3]) -> bool {
 	}
 }
 
+// Todo clean up signature, this has to be fixed, sending 6 ptrs...
 fn simplex(ap: &mut Vec3,
            bp: &mut Vec3,
            cp: &mut Vec3,
