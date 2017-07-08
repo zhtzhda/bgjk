@@ -1,6 +1,6 @@
 [package]
 name = "bgjk"
-version = "0.1.0"
+version = "1.0.0"
 authors = ["Bourgond Aries <macocio@gmail.com>"]
 license = "GPL-3.0"
 keywords = ["3D", "collision", "detection"]
