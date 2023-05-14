@@ -1,10 +1,10 @@
 [package]
 name = "bgjk"
-version = "1.0.0"
-authors = ["Bourgond Aries <macocio@gmail.com>"]
+version = "1.0.1"
+authors = ["Kevin Robert Stravers <kevin@stravers.net>"]
 license = "GPL-3.0"
 keywords = ["3D", "collision", "detection"]
-repository = "https://github.com/BourgondAries/bgjk"
+repository = "https://github.com/kstrafe/bgjk"
 description = """
 Boolean Gilbert-Johnson-Keerthi algorithm for determining if convex hull volumes intersect.
 """
